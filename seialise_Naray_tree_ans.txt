@@ -1,0 +1,85 @@
+#include<iostream>
+#include<fstream>
+#include<string>
+#define N 5
+
+using namespace std;
+
+struct Node{
+    struct Node * child[N];
+    string data;
+};
+typedef struct Node Node;
+Node * createNode(string data){
+     Node * newNode = new Node();
+     for(int i=0;i<N;i++){
+         newNode->child[i]=NULL;
+     }
+     newNode->data =data;
+     return newNode;
+}
+
+void serialise(Node* nNode, ofstream *f){
+    char *val= new char;
+    string str;
+    
+    if(nNode==NULL){
+        return;
+    }
+    
+    str = nNode->data+"\n";
+    cout<<str<<endl;
+    std::copy(str.begin(), str.end(),val);
+    *f<<val;
+    for(int i=0;i<N && nNode->child[i]!=NULL;i++){
+        serialise(nNode->child[i], f);
+    }
+    
+    //different in the case for N aray tree as we are storing it at the end of the children
+    str="null\n";
+    std::copy(str.begin(), str.end(),val);
+    *f<<val;
+    
+}
+int deserialise (Node * nNode, ifstream *f){
+    string line;
+    getline(*f, line);
+    if(line=="null" || !getline(*f, line)){
+        return 1;
+    }
+    
+    nNode = createNode(line);
+    for(int i=0;i<N;i++){
+        if(deserialise(nNode->child[i], f)==1){
+            //no more data in the Nary tree
+            break;
+        }
+    }
+    
+    return 0;
+}
+int main(){
+    std::ofstream * f;
+    
+    f->open("a.txt");
+  
+     Node *root = createNode("A"); 
+    root->child[0] = createNode("B"); 
+    root->child[1] = createNode("C"); 
+    root->child[2] = createNode("D"); 
+    root->child[0]->child[0] = createNode("E"); 
+    root->child[0]->child[1] = createNode("F"); 
+    root->child[2]->child[0] = createNode("G"); 
+    root->child[2]->child[1] = createNode("H"); 
+    root->child[2]->child[2] = createNode("I"); 
+    root->child[2]->child[3] = createNode("J"); 
+    root->child[0]->child[1]->child[0] = createNode("K"); 
+    serialise(root, f);
+    f->close();
+    std::ifstream * f1;
+    f1->open("a.txt");
+    deserialise(root, f1);
+    f1->close();
+    return 0;
+    
+}
