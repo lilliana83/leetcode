@@ -1,0 +1,73 @@
+#include<iostream>
+#include<fstream>
+#include<string>
+
+
+using namespace std;
+
+struct Node{
+    struct Node * right;
+    struct Node * left;
+    string data;
+};
+typedef struct Node Node;
+Node * createNode(string data){
+     Node * newNode = new Node();
+     newNode->right = NULL;
+     newNode->left = NULL;
+     newNode->data = data;
+     return newNode;
+}
+
+void serialise(Node* nNode, ofstream *f){
+    char *val= new char;
+    string str;
+    
+    if(nNode==NULL){
+        str="null\n";
+        std::copy(str.begin(), str.end(),val);
+        
+        *f<<val;
+        return;
+    }
+    
+    str = nNode->data+"\n";
+    cout<<str<<endl;
+    std::copy(str.begin(), str.end(),val);
+    *f<<val;
+    serialise(nNode->left, f);
+    serialise(nNode->right, f);
+    
+}
+void deserialise (Node * nNode, ifstream *f){
+    string line;
+    getline(*f, line);
+    if(line=="null" || !getline(*f, line)){
+        return;
+    }
+    
+    nNode = createNode(line);
+    deserialise(nNode->left, f);
+    deserialise(nNode->right, f);
+    
+}
+int main(){
+    std::ofstream * f;
+    Node * root= createNode("2"); 
+    f->open("a.txt");
+  
+     root->left               = createNode("8"); 
+    root->right              = createNode("22"); 
+    root->left->left         = createNode("4"); 
+    root->left->right        = createNode("12"); 
+    root->left->right->left  = createNode("10"); 
+    root->left->right->right = createNode("14"); 
+    serialise(root, f);
+    f->close();
+    std::ifstream * f1;
+    f1->open("a.txt");
+    deserialise(root, f1);
+    f1->close();
+    return 0;
+    
+}
