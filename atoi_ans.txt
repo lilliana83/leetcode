@@ -1,0 +1,52 @@
+class Solution {
+public:
+    int myAtoi(string str) {
+        int sign =1;
+        int backup;
+        int ans=0;
+        int i=0;
+        if(str.length()==0){
+            return 0;
+        }
+        while(i<str.length() && str.at(i)==' '){
+            i++;
+        }
+        if(i==(str.length())){
+            return 0;
+        }
+        if(str.at(i)=='+' && i<str.length()){
+            
+            i++;
+        }
+        else if(str.at(i)=='-' && i<str.length()){
+            sign =0;
+            i++;
+        }
+        else if(!isdigit(str.at(i))){
+            return 0;
+        }
+           
+        
+        while(i<str.length() && isdigit(str.at(i))){
+            backup = ans;
+            ans = ans*10+ (str.at(i)-'0');
+            if((((ans-(str.at(i)-'0'))/10)!=backup) || ans <0)
+            {
+                if(sign==1){
+                    return INT_MAX;
+                }
+                else if(sign==0){
+                    return INT_MIN;
+                }
+            }
+            i++;
+        }
+        if(sign==0){
+            ans = ans *(-1);
+        }
+        return ans;
+        
+         
+    }
+};
+
