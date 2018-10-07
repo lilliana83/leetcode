@@ -1,0 +1,18 @@
+class Solution {
+public:
+    vector<int> countBits(int num) {
+        vector<int> result;
+        result.push_back(0);
+        if(num==0){
+            return result;
+        }
+        result.push_back(1);
+         
+        for (int i=2;i<=num;i++){
+            result.push_back((i&1)+result[i>>1]); // add if the msb is 1 to the already previously stored remaining count
+        }
+        
+        return result;
+        
+    }
+};
