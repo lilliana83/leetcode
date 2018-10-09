@@ -1,0 +1,45 @@
+class Solution {
+    int memo[580][580];
+public:
+    
+    void initmemo(int n){
+        for(int i=0;i<n+1;i++){
+            for(int j=0;j<n+1;j++){
+                memo[i][j]=-1;
+            }
+        }
+    }
+    int getmaxScore(vector<int> & piles, int i, int j){
+        if(i+1==j)
+            return piles[i];
+        if(i>=j){
+            return 0;
+        }
+        if(memo[i][j]!=-1){
+            return memo[i][j];
+        }
+        /**
+        if 1st picks nums[i], 2nd can pick from [i + 1, j)
+                             if 2nd picks nums[i + 1], 1st can pick  from nums[i + 2, j)
+                             if 2nd picks nums[j - 1], 1st can pick from nums[i + 1, j - 1)
+        if 1st picks nums[j - 1], 2nd can pick from [i, j - 1)
+                             if 2nd picks nums[i], 1st picks from nums[i + 1, j - 1)
+                             if 2nd picks nums[j - 2], 1st picks from nums[i, j - 2)
+                             
+        **/
+        int result = max(piles[i]+ min(getmaxScore(piles, i+1, j-1), getmaxScore(piles, i+2, j)), piles[j-1]+
+                              min(getmaxScore(piles, i+1, j-1), getmaxScore(piles, i, j-2)));
+        memo[i][j] = result;
+        return result;
+    }
+    bool stoneGame(vector<int>& piles) {
+        int sum=0;
+        for(int i=0;i<piles.size();i++){
+            sum+=piles[i];
+        }
+        initmemo(piles.size());
+        int playoneScore = getmaxScore(piles, 0, piles.size());
+        return playoneScore>=sum-playoneScore;
+        
+    }
+};
