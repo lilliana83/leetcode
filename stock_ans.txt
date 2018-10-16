@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int maxProfit(vector<int>& prices, int fee) {
+        vector<int> B(prices.size()+1), S(prices.size()+1), N(prices.size()+1), R(prices.size()+1);
+        B[0] = -prices[0]-fee, S[0] = -50001, R[0] = 0, N[0] = -50001;
+        for(int j=1;j<prices.size();j++){
+            B[j] = max(R[j-1], S[j-1]) - prices[j] - fee;
+            S[j] = max(B[j-1], N[j-1]) + prices[j] ;
+            R[j] = max(R[j-1], S[j-1]);
+            N[j] = max(N[j-1], B[j-1]);
+            }
+        int l1 = B[prices.size()-1];
+        int l2 = S[prices.size()-1];
+        int l3 = R[prices.size()-1];
+        int l4 = N[prices.size()-1];
+        int l5 =  max(l1,l2);
+            int l6 = max(l3 ,l4 );
+        return max(l5, l6);
+    }
+};
