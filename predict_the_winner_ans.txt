@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int util(vector<int>& nums, vector<vector<int>>& dp, int i, int j){
+        if(i>j)     return 0;
+        if(dp[i][j]!=-1) return dp[i][j];
+        int a = min(util(nums, dp, i+1, j-1), util(nums,dp, i+2, j))+nums[i];
+        int b = min(util(nums,dp, i, j-2), util(nums, dp,i+1, j-1))+nums[j];
+dp[i][j] = max(a, b);
+           
+    return  dp[i][j];
+    }
+    bool PredictTheWinner(vector<int>& nums) {
+        if( nums.size()==2)
+            return true;
+        int n = nums.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        int myBest = util(nums, dp, 0 ,nums.size()-1);
+        return 2*myBest >= accumulate(nums.begin(), nums.end(), 0);
+    }
+};
