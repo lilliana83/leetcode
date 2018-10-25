@@ -1,0 +1,31 @@
+class Solution {
+    bool visited[30001];
+    vector<int> adj[30001];
+public:
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+        //mark all the vertices a not visites
+        for(int i=0;i<rooms.size();i++){
+            visited[i] = false;
+        }
+        int v;
+        queue<int> q;
+        q.push(0);
+        visited[0] = true;
+        while(!q.empty()){
+            v = q.front();
+            q.pop();
+            for(int i=0;i<rooms[v].size();i++){
+                if(visited[rooms[v][i]]==false){
+                    visited[rooms[v][i]] = true;
+                    q.push(rooms[v][i]);
+                }
+            }
+        }
+        for(int i=0;i<rooms.size();i++){
+            if(!visited[i])
+                return false;
+        }
+        return true;
+    
+    }
+};
